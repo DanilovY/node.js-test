@@ -1,7 +1,7 @@
 // import path from 'node:path';
 // import fs from 'node:fs';
 // import * as fs from 'node:fs';
-import fs from 'node:fs/promises';
+// import fs from 'node:fs/promises';
 
 // const world = 'Hello World';
 
@@ -57,8 +57,98 @@ import fs from 'node:fs/promises';
 
 //-----------------------------------------Buffer --------------------------------------------//
 
-const buffer = await fs.readFile('data.txt', 'utf-8');
-// Предположим, что в файле hello.txt был текст hello!
+// const buffer = await fs.readFile('data.txt', 'utf-8');
+// // Предположим, что в файле hello.txt был текст hello!
 
-console.log(buffer);
-///<Buffer 68 65 6c 6c 6f 0d 0a>
+// console.log(buffer);
+// ///<Buffer 68 65 6c 6c 6f 0d 0a>
+
+//-----------------------------------------express -----------------------------------------------------//
+// import express from 'express';
+
+// const app = express();
+
+// const PORT = 3000;
+
+// app.use((req, res, next) => {
+//   console.log(`Time: ${new Date().toLocaleString()}`);
+//   next();
+// });
+// app.get('/', (req, res) => {
+//   res.json({
+//     message: 'json.res',
+//   });
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`hello world ${PORT}`);
+// });
+
+//-----------------------------------------middleware  -----------------------------------------------------//
+
+// import express from 'express';
+
+// const app = express();
+
+// const PORT = 3000;
+
+// app.use(express.json());
+
+// app.get('/', (req, res) => {
+//   res.json({
+//     message: 'It is main page',
+//   });
+// });
+
+// app.use('*', (req, res, next) => {
+//   res.status(404).json({
+//     message: 'Not found',
+//   });
+// });
+
+// app.use((err, req, res, next) => {
+//   res.status(505).json({
+//     message: 'It is problem',
+//     err: err.message,
+//   });
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`port is working ${PORT}`);
+// });
+
+//-----------------------------------------middleware  -----------------------------------------------------//
+
+// import pino from 'pino-http';
+// import express from 'express';
+
+// // **/* Решта коду файла */**
+
+// const app = express();
+
+// const PORT = 3000;
+
+// app.use(
+//   pino({
+//     transport: {
+//       target: 'pino-pretty',
+//     },
+//   }),
+// );
+
+// app.listen(PORT, () => {
+//   console.log(`use port ${PORT}`);
+// });
+
+// import dotenv from 'dotenv';
+// dotenv.config();
+
+import { initMongoDB } from './db/initMongoDB.js';
+import { startServer } from './server.js';
+
+const bootstrap = async () => {
+  await initMongoDB();
+  startServer();
+};
+
+bootstrap();
