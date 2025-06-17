@@ -8,11 +8,14 @@ export const getAllStudents = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  ownerId,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
   const studentsQuery = StudentsCollection.find();
+
+  studentsQuery.where('ownerId').equals(ownerId);
 
   if (filter.gender) {
     studentsQuery.where('gender').equals(filter.gender);
@@ -54,7 +57,7 @@ export const getStudentById = async (studentId) => {
 };
 
 export const createStudent = async (payload) => {
-  const students = await StudentsCollection(payload);
+  const students = await StudentsCollection.create(payload);
   return students;
 };
 

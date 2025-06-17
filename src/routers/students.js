@@ -15,28 +15,30 @@ import {
   updateStudentSchema,
 } from '../validation/studentsValidation.js';
 import { isValidId } from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
+// import { ROLES } from '../constants/index.js';
+// import { checkRoles } from '../middlewares/checkRoles.js';
 
 const router = Router();
 const jsonParser = express.json();
 
-router.get('/students', ctrlWrapper(getStudentsController));
+router.use(authenticate);
 
-router.get(
-  '/students/:studentId',
-  isValidId,
-  ctrlWrapper(getStudentByIdController),
-);
+router.get('/', ctrlWrapper(getStudentsController));
+
+router.get('/:studentId', isValidId, ctrlWrapper(getStudentByIdController));
 
 router.post(
-  '/students',
+  '/',
+  jsonParser,
   validateBody(createStudentSchema),
   ctrlWrapper(createStudentController),
 );
 
-router.delete('/students/:studentId', ctrlWrapper(deleteStudentController));
+router.delete('/:studentId', isValidId, ctrlWrapper(deleteStudentController));
 
 router.put(
-  '/students/:studentId',
+  '/:studentId',
   jsonParser,
   isValidId,
   validateBody(createStudentSchema),
@@ -44,7 +46,7 @@ router.put(
 );
 
 router.patch(
-  '/students/:studentId',
+  '/:studentId',
   jsonParser,
   isValidId,
   validateBody(updateStudentSchema),

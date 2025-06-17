@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import { model, Schema } from 'mongoose';
+// import { ROLES } from '../../constants/index.js';
 
 const studentsSchema = new Schema(
   {
@@ -24,6 +26,10 @@ const studentsSchema = new Schema(
       required: true,
       default: false,
     },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -31,4 +37,29 @@ const studentsSchema = new Schema(
   },
 );
 
+const usersSchema = new Schema(
+  {
+    name: {
+      type: String,
+      require: true,
+    },
+    email: {
+      type: String,
+      require: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      require: true,
+    },
+  },
+  { timestamps: true, versionKey: false },
+);
+usersSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
+
 export const StudentsCollection = model('students', studentsSchema);
+export const UsersCollection = model('users', usersSchema);

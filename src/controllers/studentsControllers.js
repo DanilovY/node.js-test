@@ -12,6 +12,8 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getStudentsController = async (req, res) => {
+  // console.log(req.user);
+
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
@@ -21,6 +23,7 @@ export const getStudentsController = async (req, res) => {
     sortBy,
     sortOrder,
     filter,
+    ownerId: req.user.id,
   });
   res.json({
     status: 200,
@@ -38,6 +41,9 @@ export const getStudentByIdController = async (req, res, next) => {
     throw createHttpError(404, 'Student not found');
   }
 
+  if (student.ownerId.toString() !== req.user.id.toString()) {
+    throw new createHttpError.Forbidden('Access denied for student');
+  }
   res.json({
     status: 200,
     message: `Successfully found student with id ${studentId}!`,
@@ -46,7 +52,7 @@ export const getStudentByIdController = async (req, res, next) => {
 };
 
 export const createStudentController = async (req, res) => {
-  const student = await createStudent(req.body);
+  const student = await createStudent({ ...req.body, ownerId: req.user.id });
 
   res.status(201).json({
     status: 201,
