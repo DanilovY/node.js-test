@@ -16,6 +16,7 @@ import {
 } from '../validation/studentsValidation.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/upload.js';
 // import { ROLES } from '../constants/index.js';
 // import { checkRoles } from '../middlewares/checkRoles.js';
 
@@ -31,6 +32,7 @@ router.get('/:studentId', isValidId, ctrlWrapper(getStudentByIdController));
 router.post(
   '/',
   jsonParser,
+  upload.single('avatar'),
   validateBody(createStudentSchema),
   ctrlWrapper(createStudentController),
 );

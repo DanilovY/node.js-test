@@ -30,6 +30,11 @@ const studentsSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    avatar: {
+      type: String,
+      require: false,
+      default: null,
+    },
   },
   {
     timestamps: true,

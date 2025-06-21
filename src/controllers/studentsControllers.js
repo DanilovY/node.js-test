@@ -11,6 +11,11 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import { uploadCloudinary } from '../utils/saveFileToCloudinary.js';
+import { getEnvVar } from '../utils/detEnvVar.js';
+
 export const getStudentsController = async (req, res) => {
   // console.log(req.user);
 
@@ -52,7 +57,25 @@ export const getStudentByIdController = async (req, res, next) => {
 };
 
 export const createStudentController = async (req, res) => {
-  const student = await createStudent({ ...req.body, ownerId: req.user.id });
+  let avatar = null;
+  if (getEnvVar('UPLOAD-CLOUDINARY') === 'true') {
+    const result = await uploadCloudinary(req.file.path);
+    await fs.unlink(req.file.path);
+
+    avatar = result.secure_url;
+  } else {
+    await fs.rename(
+      req.file.path,
+      path.resolve('src', 'uploads', 'avatars', req.file.filename),
+    );
+    avatar = `http://localhost:3000/avatars/${req.file.filename}`;
+  }
+
+  const student = await createStudent({
+    ...req.body,
+    ownerId: req.user.id,
+    avatar,
+  });
 
   res.status(201).json({
     status: 201,
